@@ -12,6 +12,8 @@ public:
 
 public:
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr) {
+		std::cout << std::filesystem::current_path() << std::endl;
+
 		std::string vertexCode;
 		std::string fragmentCode;
 		std::string geometryCode;
@@ -29,7 +31,11 @@ public:
 
 			// read file's buffer contents into streams
 			vShaderStream << vShaderFile.rdbuf();
-			fShaderStream << fShaderStream.rdbuf();
+			fShaderStream << fShaderFile.rdbuf();
+
+			// close file handlers
+			vShaderFile.close();
+			fShaderFile.close();
 			
 			vertexCode = vShaderStream.str();
 			fragmentCode = fShaderStream.str();
@@ -44,7 +50,7 @@ public:
 
 		}
 		catch (std::ifstream::failure& e) {
-			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
 		}
 
 		const char* vShaderCode = vertexCode.c_str();
@@ -105,12 +111,18 @@ private:
 				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
 				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
+			else {
+				std::cout << "success: " << type << std::endl;
+			}
 		}
 		else {
 			glGetProgramiv(shader, GL_LINK_STATUS, &success);
 			if (!success) {
 				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
 				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+			}
+			else {
+				std::cout << "success: " << type << std::endl;
 			}
 		}
 	}

@@ -40,7 +40,7 @@ int main() {
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader ourShader("4.2.texture.vs", "4.2.texture.fs");
+    Shader ourShader("texture.vs", "texture.fs");
 
     float vertices[] = {
         // positions          // colors           // texture coords
@@ -54,7 +54,7 @@ int main() {
         0, 1, 3,    // first triangle
         1, 2, 3     // second triangle
     };
-    
+
     unsigned int VBO, VAO, EBO, VAO1;
     glGenVertexArrays(1, &VAO);  // VAO（vertex-array object）顶点数组对象，用来管理VBO.
     // 申请一块缓冲
@@ -101,12 +101,9 @@ int main() {
         // 纹理缩小时 采用线性过滤hub
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
-        stbi_set_flip_vertically_on_load(true);
-
-        data = stbi_load("", &width, &height, &nrChannels, 0);
+        data = stbi_load("wall.jpg", &width, &height, &nrChannels, 0);
         if (data) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else {
@@ -126,8 +123,10 @@ int main() {
         // set texture filtering parameters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        
+        stbi_set_flip_vertically_on_load(true);
         // load image, create texture and generate mipmaps
-        data = stbi_load("", &width, &height, &nrChannels, 0);
+        data = stbi_load("awesomeface.png", &width, &height, &nrChannels, 0);
         if (data)
         {
             // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
@@ -158,7 +157,8 @@ int main() {
 
         ourShader.use();
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        GLint index = 3;
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)3);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
