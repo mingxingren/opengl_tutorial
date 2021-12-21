@@ -157,8 +157,7 @@ int main() {
 
         ourShader.use();
         glBindVertexArray(VAO);
-        GLint index = 3;
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
