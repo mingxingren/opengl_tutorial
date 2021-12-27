@@ -1,0 +1,6 @@
+﻿  main.cpp
+D:\project\opengl_tutorial\translate\src\main.cpp(63,33): warning C4101: “VAO1”: 未引用的局部变量
+D:\project\opengl_tutorial\translate\src\main.cpp(215,26): warning C4305: “+=”: 从“double”到“float”截断
+D:\project\opengl_tutorial\translate\src\main.cpp(220,26): warning C4305: “-=”: 从“double”到“float”截断
+LINK : warning LNK4098: 默认库“LIBCMT”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+  src.vcxproj -> D:\project\opengl_tutorial\translate\x64\Debug\src.exe
