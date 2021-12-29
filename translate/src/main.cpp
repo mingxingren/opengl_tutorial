@@ -60,7 +60,7 @@ int main() {
         1, 2, 3     // second triangle
     };
 
-    unsigned int VBO, VAO, EBO, VAO1;
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);  // VAO（vertex-array object）顶点数组对象，用来管理VBO.
     // 申请一块缓冲
     glGenBuffers(1, &VBO);       // VBO（vertex buffer object）顶点缓冲对象，用来缓存用户传入的顶点数据.
