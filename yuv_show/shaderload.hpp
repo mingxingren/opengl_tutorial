@@ -12,11 +12,13 @@ public:
     CShaderload() {
         unsigned int vertex_shader, fragment_shader;
         vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+        std::cout << "vertex content: " << vertex_content << std::endl;
         glShaderSource(vertex_shader, 1, &vertex_content, nullptr);
         glCompileShader(vertex_shader);
         CheckCompileErrors(vertex_shader, "VERTEX");
 
         fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+        std::cout << "fragment content: " << fragment_content << std::endl;
         glShaderSource(fragment_shader, 1, &fragment_content, nullptr);
         glCompileShader(fragment_shader);
         CheckCompileErrors(vertex_shader, "FRAGMENT");
