@@ -144,7 +144,7 @@ int main() {
 
     ourShader.use();
     glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
-    ourShader.setInt("texture2", 2);
+    ourShader.setInt("texture2", 1);
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window, &ourShader);
@@ -154,7 +154,7 @@ int main() {
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE2);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         ourShader.use();
