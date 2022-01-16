@@ -8,11 +8,11 @@ static char * fragment_content = R"(
 out vec4 FragColor;
 
 in vec2 TexCoord;
-uniform sampler2D texture1;
+uniform sampler2D rgb_texture;
 
 void main()
 {
-	FragColor = texture(texture1, TexCoord);
+	FragColor = texture(rgb_texture, TexCoord);
 }
 )";
 

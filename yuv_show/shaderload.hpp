@@ -1,3 +1,5 @@
+#ifndef SHADERLOAD_THD_H
+#define SHADERLOAD_THD_H
 #include <string>
 #include <iostream>
 #include <glad/glad.h>
@@ -76,3 +78,5 @@ private:
         }
     }
 };
+
+#endif // SHADERLOAD_THD_H
