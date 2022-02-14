@@ -88,7 +88,7 @@ void CSoftDecodeThd::run(){
     std::shared_ptr<AVFrame> rgb_frame(av_frame_alloc(), [](AVFrame* inner){
         av_frame_free(&inner);
     });
-    rgb_frame->format = AV_PIX_FMT_RGB24;
+    rgb_frame->format = this->m_eDstPixelFormat;
     rgb_frame->width = m_pCodeContext->width;
     rgb_frame->height = m_pCodeContext->height;
     av_frame_get_buffer(rgb_frame.get(), 1);

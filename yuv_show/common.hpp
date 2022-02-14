@@ -8,13 +8,20 @@
 #include <glad/glad.h>
 #include <iostream>
 
-static void print_x_error() {
+static bool print_x_error() {
+    bool res = true;
     while (true) {
-        GLenum res = glGetError();
-        if (res == GL_NO_ERROR) {
-            std::cout << "##############print_opengl_error: " << res << std::endl;
+        GLenum err = glGetError();
+        if (err == GL_NO_ERROR) {
+            if (res) {
+                std::cout << "##############print_opengl_error success" << std::endl;
+            }
+            break;
         }
+        res = false;
+        std::cout << "##############print_opengl_error: " << err << std::endl;
     }
+    return res;
 }
 
 

@@ -12,6 +12,9 @@ constexpr int OPENGL_MAJOR_VERSION = 3;
 constexpr int OPENGL_MINOR_VERSION = 3;
 
 int main() {
+    int dialog_width = 1918;
+    int dialog_height = 1078;
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error:" << SDL_GetError() << std::endl;
         return EXIT_FAILURE;
@@ -23,7 +26,7 @@ int main() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     int window_flag=  SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE;
-    SDL_Window * window = SDL_CreateWindow("yuv_texture", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, window_flag);
+    SDL_Window * window = SDL_CreateWindow("yuv_texture", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dialog_width, dialog_height, window_flag);
 
     if (window == nullptr) {
         std::cerr << "There was an error creating the window: " << SDL_GetError() << std::endl;

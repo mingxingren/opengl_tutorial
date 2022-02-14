@@ -24,18 +24,17 @@ public:
     }
 
     void render_texture(int w, int h, GLint internal, GLenum format, GLenum type, void* data) {
-        print_x_error();
         if (w != this->width || h != this->height) {
             this->destroy_texture();    // 销毁之前的纹理
             glGenTextures(1, &this->texture_id);  // 生成纹理
             glBindTexture(GL_TEXTURE_2D, this->texture_id);   // 绑定纹理
-            glTexImage2D(this->texture_id,
+            glTexImage2D(GL_TEXTURE_2D,
                          0,
-                         GL_RGB,
+                         GL_RGBA,
                          w,
                          h,
                          0,
-                         GL_RGB,
+                         GL_RGBA,
                          GL_UNSIGNED_BYTE,
                          NULL);     // 设置纹理, 此时像素数据填充设置为 NULL
             this->width = w;
@@ -57,9 +56,10 @@ private:
         glBindTexture(GL_TEXTURE_2D, this->texture_id);
         // UNPACK: cpu --> gpu
         // PACK: gpu --> cpu
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 3);  // 设置像素数据 从 CPU 到 GPU 的对齐方式, RGB为两字节对齐
+        print_x_error();
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  // 设置像素数据 从 CPU 到 GPU 的对齐方式, RGB为两字节对齐
         glPixelStorei(GL_UNPACK_ROW_LENGTH, this->width);    // 设置像素数据 从 CPU 到 GPU 的行的长度
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         glActiveTexture(GL_TEXTURE0 + this->shader_location);    // 激活 着色器的纹理单元, 置为活跃状态
         glBindTexture(GL_TEXTURE_2D, this->texture_id);   // 将 texture 与shader的纹理单元绑定
