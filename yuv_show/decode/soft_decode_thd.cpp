@@ -94,6 +94,7 @@ void CSoftDecodeThd::run(){
     av_frame_get_buffer(rgb_frame.get(), 1);
 
     if (painter) {
+        std::cout << "########################painter->MakeCurrentContext" << std::endl;
         painter->MakeCurrentContext();
     }
 
@@ -129,6 +130,7 @@ void CSoftDecodeThd::run(){
                     if (painter) {
                         painter->Painter(rgb_frame->data[0], rgb_frame->linesize[0], rgb_frame->height, rgb_frame->width);
                     }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(5));
                 }
             } while (ret != AVERROR(EAGAIN));
         }

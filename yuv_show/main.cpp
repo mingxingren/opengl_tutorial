@@ -38,11 +38,16 @@ int main() {
         std::cout << "Creating OpenGL context created.........." << std::endl;
     }
 
+    std::cout << "#############Main thread id: " << std::this_thread::get_id() << std::endl;
+
     CPainter oPainter(window, context);
+    SDL_GL_MakeCurrent(window, nullptr);
+
     oPainter.RegisterMakeCurrentFunc([](void* window, void* context){
         if (window == nullptr || context == nullptr) {
             return;
         }
+        std::cout << "#############other thread id: " << std::this_thread::get_id() << std::endl;
         SDL_GL_MakeCurrent(static_cast<SDL_Window*>(window), static_cast<SDL_GLContext>(context));
     });
 
@@ -60,7 +65,7 @@ int main() {
     bool quit = false;
     while (!quit) {
         SDL_Event event;
-        while (SDL_PollEvent(&event)) {
+        if (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
                     quit = true;
@@ -71,15 +76,15 @@ int main() {
                 case SDL_MOUSEMOTION:
                     break;
                 case SDL_WINDOWEVENT: {
-                    SDL_WindowEvent &window_event = event.window;
-                    if (window_event.event == SDL_WINDOWEVENT_SHOWN) {
-                        if (!first_show) {
-                            first_show = true;
-                            oPainter.Viewport(0, 0, 800, 600);
-                        }
-                    }else if (window_event.event == SDL_WINDOWEVENT_RESIZED) {
-                        oPainter.Viewport(0, 0, window_event.data1, window_event.data2);
-                    }
+//                    SDL_WindowEvent &window_event = event.window;
+//                    if (window_event.event == SDL_WINDOWEVENT_SHOWN) {
+//                        if (!first_show) {
+//                            first_show = true;
+//                            oPainter.Viewport(0, 0, 800, 600);
+//                        }
+//                    }else if (window_event.event == SDL_WINDOWEVENT_RESIZED) {
+//                        oPainter.Viewport(0, 0, window_event.data1, window_event.data2);
+//                    }
                 }
                     break;
                 default:

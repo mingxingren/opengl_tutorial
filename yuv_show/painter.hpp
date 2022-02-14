@@ -9,6 +9,7 @@
 #include "SDL.h"
 #include "glad/glad.h"
 #include "shaderload.hpp"
+#include "texture.hpp"
 
 class CPainter{
 public:
@@ -18,11 +19,13 @@ public:
 private:
     type_swap_window fn_swap_window = nullptr;
     type_make_current fn_make_current = nullptr;
+    std::unique_ptr<CTexture> video_texture = nullptr;
 
 public:
     CPainter(void * window, void * glcontext) {
         this->window = window;
         this->glcontext = glcontext;
+        this->texture_location_value = 0;
 
         if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
             std::cerr << "gladLoadGLLoader call fail" << std::endl;
@@ -32,27 +35,31 @@ public:
 
         this->shader_load =  std::make_shared<CShaderload>();
 
+        // 设置清空的颜色
+        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+
         // 申请顶点缓冲队列
         glGenVertexArrays(1, &this->VAO);
         // 申请两块内存
-        glGenBuffers(1, &this->VBO);
-        glGenBuffers(1, &this->EBO);
+        glGenBuffers(1, &this->VBO);    // 顶点内存对象
+        glGenBuffers(1, &this->EBO);    // 顶点索引对象
 
         {
-            glBindVertexArray(this->VAO);
+            glBindVertexArray(this->VAO);   // 绑定VAO 将当前操作对象指向VAO
 
-            glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(this->space_vertices), space_vertices, GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, this->VBO);   // 将当前要操作的顶点内存对象指向 VBO
+            glBufferData(GL_ARRAY_BUFFER, sizeof(this->space_vertices), space_vertices, GL_STATIC_DRAW);    // 填充 VBO 数据
 
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);   // 将绑定EBO 绑定到VAO
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);    // 填充EBO
 
-            // 将数据绑定到 location 0 变量
+            // 将VAO中的顶点坐标数据绑定到 location 0 变量
+            // 将当前操作的顶点缓冲绑定到 VAO上, 并指定如何解析该顶点内存对象
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
             // 激活 location 0 变量
             glEnableVertexAttribArray(0);
 
-            // 将数据绑定到 location 1 变量
+            // 将VAO中的纹理坐标数据绑定到 location 1 变量
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
             // 激活 location 1 变量
             glEnableVertexAttribArray(1);
@@ -60,17 +67,9 @@ public:
             glBindVertexArray(0);
         }
 
-        {
-            glGenTextures(1, &this->texture);
-            glBindTexture(GL_TEXTURE_2D, this->texture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        }
-
         this->shader_load->Use();
-        this->shader_load->SetInt("rgb_texture", 0);
+        this->shader_load->SetInt("rgb_texture", this->texture_location_value);
+        this->video_texture = std::make_unique<CTexture>(this->texture_location_value);
     }
 
     ~CPainter() {
@@ -89,17 +88,14 @@ public:
     }
 
     void Painter(unsigned char* data, size_t data_size, int width, int height) {
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, this->texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_INT, data);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        this->video_texture->render_texture(width, height, 0, 0, 0, data);
 
         this->shader_load->Use();
         glBindVertexArray(this->VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-        fn_swap_window(window);
+        fn_swap_window(this->window);
     }
 
     void Viewport(int x, int y, int width, int height) {
@@ -129,6 +125,7 @@ private:
     GLuint VBO;
     GLuint EBO;
     GLuint texture;
+    int texture_location_value;
     std::shared_ptr<CShaderload> shader_load = nullptr;
 
     void* window;

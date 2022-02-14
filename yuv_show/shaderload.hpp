@@ -43,6 +43,7 @@ public:
         glUseProgram(this->ID);
     }
 
+    // 将着色器中 uniform 变量设置成对应的值
     void SetInt(const std::string &name, int value) const {
         GLint variable_id = glGetUniformLocation(this->ID, name.c_str());
         glUniform1i(variable_id, value);
