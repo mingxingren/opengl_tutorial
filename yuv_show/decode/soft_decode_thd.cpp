@@ -128,7 +128,7 @@ void CSoftDecodeThd::run(){
                                 pFrameOrg->height, rgb_frame->data, rgb_frame->linesize);
                     std::cout << "#######################Get a frame" << std::endl;
                     if (painter) {
-                        painter->Painter(rgb_frame->data[0], rgb_frame->linesize[0], rgb_frame->height, rgb_frame->width);
+                        painter->Painter(rgb_frame->data[0], rgb_frame->linesize[0], rgb_frame->width, rgb_frame->height);
                     }
                     std::this_thread::sleep_for(std::chrono::milliseconds(5));
                 }

@@ -59,15 +59,18 @@ private:
         print_x_error();
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  // 设置像素数据 从 CPU 到 GPU 的对齐方式, RGB为两字节对齐
         glPixelStorei(GL_UNPACK_ROW_LENGTH, this->width);    // 设置像素数据 从 CPU 到 GPU 的行的长度
+        std::cout << "#################width: " << this->width << " height: " << this->height << std::endl;
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         glActiveTexture(GL_TEXTURE0 + this->shader_location);    // 激活 着色器的纹理单元, 置为活跃状态
-        glBindTexture(GL_TEXTURE_2D, this->texture_id);   // 将 texture 与shader的纹理单元绑定
+        glBindTexture(GL_TEXTURE_2D, this->texture_id);   // 将 texture 与 当前活跃的shader纹理单元绑定
         // 设置图片放缩后
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }
 
 private:

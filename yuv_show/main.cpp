@@ -43,13 +43,14 @@ int main() {
 
     std::cout << "#############Main thread id: " << std::this_thread::get_id() << std::endl;
 
-    CPainter oPainter(window, context);
+    CPainter oPainter(window, context, dialog_width, dialog_height);
     SDL_GL_MakeCurrent(window, nullptr);
 
     oPainter.RegisterMakeCurrentFunc([](void* window, void* context){
         if (window == nullptr || context == nullptr) {
             return;
         }
+
         std::cout << "#############other thread id: " << std::this_thread::get_id() << std::endl;
         SDL_GL_MakeCurrent(static_cast<SDL_Window*>(window), static_cast<SDL_GLContext>(context));
     });

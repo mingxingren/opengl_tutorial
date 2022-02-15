@@ -6,6 +6,7 @@
 #define YUV_SHOW_PAINTER_H
 
 #include <functional>
+#include <atomic>
 #include "SDL.h"
 #include "glad/glad.h"
 #include "shaderload.hpp"
@@ -22,7 +23,8 @@ private:
     std::unique_ptr<CTexture> video_texture = nullptr;
 
 public:
-    CPainter(void * window, void * glcontext) {
+    CPainter(void * window, void * glcontext, int dlg_w, int dlg_h)
+    : dialog_width(dlg_w), dialog_height(dlg_h){
         this->window = window;
         this->glcontext = glcontext;
         this->texture_location_value = 0;
@@ -34,9 +36,6 @@ public:
         }
 
         this->shader_load =  std::make_shared<CShaderload>();
-
-        // 设置清空的颜色
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
         // 申请顶点缓冲队列
         glGenVertexArrays(1, &this->VAO);
@@ -70,6 +69,9 @@ public:
         this->shader_load->Use();
         this->shader_load->SetInt("rgb_texture", this->texture_location_value);
         this->video_texture = std::make_unique<CTexture>(this->texture_location_value);
+
+        // 设置 窗口输出尺寸
+        glViewport(0, 0, this->dialog_width, this->dialog_height);
     }
 
     ~CPainter() {
@@ -88,6 +90,8 @@ public:
     }
 
     void Painter(unsigned char* data, size_t data_size, int width, int height) {
+        // 设置清空的颜色
+        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         this->video_texture->render_texture(width, height, 0, 0, 0, data);
@@ -109,10 +113,10 @@ public:
 private:
     float space_vertices[20] = {
             // 顶点坐标            // 纹理坐标
-            1.0f, 1.0f, 0.0f,    1.0f, 1.0f, // 右上
-            1.0f, -1.0f, 0.0f,   1.0f, 0.0f, // 右下
-            -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, // 左下
-            -1.0f, 1.0f, 0.0f,   0.0f, 1.0f, // 左上
+            -1.0f, 1.0f, 0.0f,    0.0f, 0.0f, // 顶点坐标: 左上   纹理坐标: 左下
+            -1.0f, -1.0f, 0.0f,   0.0f, 1.0f, // 顶点坐标: 左下   纹理坐标: 左上
+            1.0f, -1.0f, 0.0f,  1.0f, 1.0f,  // 顶点坐标: 右下    纹理坐标: 右上
+            1.0f, 1.0f, 0.0f,   1.0f, 0.0f, // 顶点坐标: 右上     纹理坐标: 右下
     };
 
     // 顶点索引坐标
@@ -130,6 +134,8 @@ private:
 
     void* window;
     void* glcontext;
+    std::atomic_int32_t  dialog_width;
+    std::atomic_int32_t  dialog_height;
 };
 
 #endif //YUV_SHOW_PAINTER_H
