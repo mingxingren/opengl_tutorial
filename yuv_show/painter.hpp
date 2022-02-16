@@ -74,7 +74,7 @@ public:
         this->shader_load->SetInt("texY", this->y_location_value);
         this->shader_load->SetInt("texU", this->u_location_value);
         this->shader_load->SetInt("texV", this->v_location_value);
-        this->shader_load->SetVec4("icb", 3, 0, 0, 1);
+        this->shader_load->SetVec4("icb", 2, 0, 0, 1);
         this->video_texture = std::make_unique<CTexture>(this->rgb_location_value,
                                                          this->y_location_value,
                                                          this->u_location_value,
@@ -121,6 +121,22 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
 
         this->video_texture->render_I420_texture(width, height, y_planar, u_planar, v_planar);
+
+        this->shader_load->Use();
+        glBindVertexArray(this->VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+        fn_swap_window(this->window);
+    }
+
+    void PainterNV(int width, int height,
+                    const unsigned char* y_planar,
+                    const unsigned char* uv_planar) {
+        // 设置清空的颜色
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        this->video_texture->render_nv12_texture(width, height, y_planar, uv_planar);
+
         this->shader_load->Use();
         glBindVertexArray(this->VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
@@ -133,6 +149,10 @@ public:
 
     void MakeCurrentContext() {
         fn_make_current(window, glcontext);
+    }
+
+    void * GetWindow() {
+        return this->window;
     }
 
 private:

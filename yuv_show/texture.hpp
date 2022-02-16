@@ -81,6 +81,58 @@ public:
         this->update_yuv_planar(this->texture_v, this->shader_v_location, v_data, this->width / 2, this->height / 2);
     }
 
+    void render_nv12_texture(int w, int h, const void* y_data, const void *uv_data) {
+        if (w != this->width || h != this->height) {
+            this->destroy_texture();
+
+            // Y 分量纹理
+            glGenTextures(1, &this->texture_y);
+            glBindTexture(GL_TEXTURE_2D, this->texture_y);
+            // GL_R8 指定纹理颜色格式为 R: 1, G: 0, B: 0 A: 1
+            // GL_RED 指定cpu 像素数据为 R分量字符串, 此处可以指为 Y
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+
+            // UV 分量纹理
+            glGenTextures(1, &this->texture_u);
+            glBindTexture(GL_TEXTURE_2D, this->texture_u);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RG, w / 2, h / 2 , 0, GL_RG, GL_UNSIGNED_BYTE, NULL);
+
+            this->width = w;
+            this->height = h;
+        }
+
+        {
+            glBindTexture(GL_TEXTURE_2D, this->texture_y);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, w);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RED, GL_UNSIGNED_BYTE, y_data);
+            glActiveTexture(GL_TEXTURE0 + this->shader_y_location);
+
+            glBindTexture(GL_TEXTURE_2D, this->texture_y);   // 将 texture 与 当前活跃的shader纹理单元绑定
+            // 设置图片放缩后
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        }
+
+        {
+            glBindTexture(GL_TEXTURE_2D, this->texture_u);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, w / 2);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w / 2, h / 2, GL_RG, GL_UNSIGNED_BYTE, uv_data);
+
+            glActiveTexture(GL_TEXTURE0 + this->shader_u_location);
+
+            glBindTexture(GL_TEXTURE_2D, this->texture_u);   // 将 texture 与 当前活跃的shader纹理单元绑定
+            // 设置图片放缩后
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        }
+    }
+
     void destroy_texture() {
         if (glIsTexture(this->texture_rgb_id) == GL_TRUE) {
             glDeleteTextures(1, &this->texture_rgb_id);

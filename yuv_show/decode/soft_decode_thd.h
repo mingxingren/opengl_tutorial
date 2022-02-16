@@ -47,7 +47,7 @@ private:
 
 private:
     std::thread *m_thread = nullptr;
-    AVPixelFormat m_eDstPixelFormat = AV_PIX_FMT_YUV420P;
+    AVPixelFormat m_eDstPixelFormat = AV_PIX_FMT_NV12;
     std::string m_sFilePath;
 
     CPainter *painter = nullptr;

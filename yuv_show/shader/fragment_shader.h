@@ -29,7 +29,6 @@ void yuv_to_rgb(float y, float u, float v, out vec4 rgba) {
     float r = y + 1.793 * v;
     float g = y - 0.213 * u - 0.533 * v;
     float b = y + 2.112 * u;
-
     rgba = vec4(r, g, b, 1.0);
 }
 
@@ -41,7 +40,7 @@ void main()
         // NV12
         float y = texture2D(texY, TexCoord).r;
         float u = texture2D(texU, TexCoord).r;
-        float v = texture2D(texV, TexCoord).g;
+        float v = texture2D(texU, TexCoord).g;
         yuv_to_rgb(y, u, v, FragColor);
     }
     else if (format == 3 || format == 4) {

@@ -5,6 +5,7 @@
 #include "soft_decode_thd.h"
 #include <string>
 #include <glad/glad.h>
+#include "../render_test.hpp"
 
 CSoftDecodeThd::CSoftDecodeThd() {
 
@@ -98,6 +99,8 @@ void CSoftDecodeThd::run(){
         painter->MakeCurrentContext();
     }
 
+//    CRenderTest render_test(static_cast<SDL_Window*>(painter->GetWindow()));
+
     while (true) {
         ::av_packet_unref(pPack);
         if (::av_read_frame(pFormatContex, pPack) != 0){
@@ -128,9 +131,20 @@ void CSoftDecodeThd::run(){
                                 pFrameOrg->height, rgb_frame->data, rgb_frame->linesize);
                     std::cout << "#######################Get a frame " << av_get_pix_fmt_name(static_cast<AVPixelFormat>(rgb_frame->format)) << std::endl;
                     if (painter) {
-//                        painter->Painter(rgb_frame->data[0], rgb_frame->linesize[0], rgb_frame->width, rgb_frame->height);
-                        painter->PainterYUV(rgb_frame->width, rgb_frame->height, rgb_frame->data[0], rgb_frame->data[1], rgb_frame->data[2]);
+                        if (m_eDstPixelFormat == AV_PIX_FMT_YUV420P) {
+                            painter->PainterYUV(rgb_frame->width, rgb_frame->height, rgb_frame->data[0], rgb_frame->data[1], rgb_frame->data[2]);
+                        }
+                        else if (m_eDstPixelFormat == AV_PIX_FMT_NV12) {
+                            painter->PainterNV(rgb_frame->width, rgb_frame->height, rgb_frame->data[0], rgb_frame->data[1]);
+                        }
+                        else{
+                            painter->Painter(rgb_frame->data[0], rgb_frame->linesize[0], rgb_frame->width, rgb_frame->height);
+                        }
                     }
+//                    render_test.painter(rgb_frame->width, rgb_frame->height
+//                                        , rgb_frame->data[0], rgb_frame->linesize[0]
+//                                        , rgb_frame->data[1], rgb_frame->linesize[1]
+//                                        , rgb_frame->data[2], rgb_frame->linesize[2]);
                     std::this_thread::sleep_for(std::chrono::milliseconds(5));
                 }
             } while (ret != AVERROR(EAGAIN));
