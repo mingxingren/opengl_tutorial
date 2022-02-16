@@ -27,7 +27,10 @@ public:
     : dialog_width(dlg_w), dialog_height(dlg_h){
         this->window = window;
         this->glcontext = glcontext;
-        this->texture_location_value = 0;
+        this->rgb_location_value = 0;   // 对应 Shader 纹理 GL_TEXTURE0
+        this->y_location_value = 1;     // 对应 Shader 纹理 GL_TEXTURE1
+        this->u_location_value = 2;     // 对应 Shader 纹理 GL_TEXTURE2
+        this->v_location_value = 3;     // 对应 Shader 纹理 GL_TEXTURE3
 
         if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
             std::cerr << "gladLoadGLLoader call fail" << std::endl;
@@ -67,8 +70,15 @@ public:
         }
 
         this->shader_load->Use();
-        this->shader_load->SetInt("rgb_texture", this->texture_location_value);
-        this->video_texture = std::make_unique<CTexture>(this->texture_location_value);
+        this->shader_load->SetInt("rgb_texture", this->rgb_location_value);
+        this->shader_load->SetInt("texY", this->y_location_value);
+        this->shader_load->SetInt("texU", this->u_location_value);
+        this->shader_load->SetInt("texV", this->v_location_value);
+        this->shader_load->SetVec4("icb", 3, 0, 0, 1);
+        this->video_texture = std::make_unique<CTexture>(this->rgb_location_value,
+                                                         this->y_location_value,
+                                                         this->u_location_value,
+                                                         this->v_location_value);
 
         // 设置 窗口输出尺寸
         glViewport(0, 0, this->dialog_width, this->dialog_height);
@@ -91,11 +101,26 @@ public:
 
     void Painter(unsigned char* data, size_t data_size, int width, int height) {
         // 设置清空的颜色
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         this->video_texture->render_texture(width, height, 0, 0, 0, data);
 
+        this->shader_load->Use();
+        glBindVertexArray(this->VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+        fn_swap_window(this->window);
+    }
+
+    void PainterYUV(int width, int height,
+                    const unsigned char* y_planar,
+                    const unsigned char* u_planar,
+                    const unsigned char* v_planar) {
+        // 设置清空的颜色
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        this->video_texture->render_I420_texture(width, height, y_planar, u_planar, v_planar);
         this->shader_load->Use();
         glBindVertexArray(this->VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
@@ -129,7 +154,10 @@ private:
     GLuint VBO;
     GLuint EBO;
     GLuint texture;
-    int texture_location_value;
+    int rgb_location_value;
+    int y_location_value;
+    int u_location_value;
+    int v_location_value;
     std::shared_ptr<CShaderload> shader_load = nullptr;
 
     void* window;

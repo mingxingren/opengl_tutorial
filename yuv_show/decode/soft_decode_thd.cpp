@@ -126,9 +126,10 @@ void CSoftDecodeThd::run(){
                 if (ret >= 0) {
                     ::sws_scale(m_pVideoSwsCtx, (const uint8_t * const*)pFrameOrg->data, pFrameOrg->linesize, 0,
                                 pFrameOrg->height, rgb_frame->data, rgb_frame->linesize);
-                    std::cout << "#######################Get a frame" << std::endl;
+                    std::cout << "#######################Get a frame " << av_get_pix_fmt_name(static_cast<AVPixelFormat>(rgb_frame->format)) << std::endl;
                     if (painter) {
-                        painter->Painter(rgb_frame->data[0], rgb_frame->linesize[0], rgb_frame->width, rgb_frame->height);
+//                        painter->Painter(rgb_frame->data[0], rgb_frame->linesize[0], rgb_frame->width, rgb_frame->height);
+                        painter->PainterYUV(rgb_frame->width, rgb_frame->height, rgb_frame->data[0], rgb_frame->data[1], rgb_frame->data[2]);
                     }
                     std::this_thread::sleep_for(std::chrono::milliseconds(5));
                 }

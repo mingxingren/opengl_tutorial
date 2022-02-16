@@ -12,8 +12,8 @@ constexpr int OPENGL_MAJOR_VERSION = 3;
 constexpr int OPENGL_MINOR_VERSION = 3;
 
 int main() {
-    int dialog_width = 1918;
-    int dialog_height = 1078;
+    int dialog_width = 1280;
+    int dialog_height = 720;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error:" << SDL_GetError() << std::endl;

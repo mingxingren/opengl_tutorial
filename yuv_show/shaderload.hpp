@@ -49,6 +49,11 @@ public:
         glUniform1i(variable_id, value);
     }
 
+    void SetVec4(const std::string &name, GLint x1, GLint x2, GLint x3, GLint x4) const {
+        GLint variable_id = glGetUniformLocation(this->ID, name.c_str());
+        glUniform4i(variable_id, x1, x2, x3, x4);
+    }
+
     inline unsigned int GetID() {
         return this->ID;
     }
