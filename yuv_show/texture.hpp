@@ -6,13 +6,15 @@
 #define YUV_SHOW_TEXTURE_H
 
 #include "common.hpp"
+#include "shaderload.hpp"
 
 #define INVALID_TEXTURE 0
 
 class CTexture {
 public:
-    CTexture(GLuint rgb_location, GLuint y_location, GLuint u_location, GLuint v_location)
-    : shader_rgb_location(rgb_location)
+    CTexture(CShaderload *shader, GLuint rgb_location, GLuint y_location, GLuint u_location, GLuint v_location)
+    : shader_program(shader)
+    , shader_rgb_location(rgb_location)
     , shader_y_location(y_location)
     , shader_u_location(u_location)
     , shader_v_location(v_location){
@@ -95,20 +97,19 @@ public:
             // UV 分量纹理
             glGenTextures(1, &this->texture_u);
             glBindTexture(GL_TEXTURE_2D, this->texture_u);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RG, w / 2, h / 2 , 0, GL_RG, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RG8, w / 2, h / 2 , 0, GL_RG, GL_UNSIGNED_BYTE, NULL);
 
             this->width = w;
             this->height = h;
         }
 
         {
+            glActiveTexture(GL_TEXTURE0 + this->shader_y_location);
             glBindTexture(GL_TEXTURE_2D, this->texture_y);
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             glPixelStorei(GL_UNPACK_ROW_LENGTH, w);
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RED, GL_UNSIGNED_BYTE, y_data);
-            glActiveTexture(GL_TEXTURE0 + this->shader_y_location);
 
-            glBindTexture(GL_TEXTURE_2D, this->texture_y);   // 将 texture 与 当前活跃的shader纹理单元绑定
             // 设置图片放缩后
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -117,14 +118,12 @@ public:
         }
 
         {
+            glActiveTexture(GL_TEXTURE0 + this->shader_u_location);
             glBindTexture(GL_TEXTURE_2D, this->texture_u);
             glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
             glPixelStorei(GL_UNPACK_ROW_LENGTH, w / 2);
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w / 2, h / 2, GL_RG, GL_UNSIGNED_BYTE, uv_data);
 
-            glActiveTexture(GL_TEXTURE0 + this->shader_u_location);
-
-            glBindTexture(GL_TEXTURE_2D, this->texture_u);   // 将 texture 与 当前活跃的shader纹理单元绑定
             // 设置图片放缩后
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -157,7 +156,6 @@ private:
         glBindTexture(GL_TEXTURE_2D, this->texture_rgb_id);
         // UNPACK: cpu --> gpu
         // PACK: gpu --> cpu
-        print_x_error();
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  // 设置像素数据 从 CPU 到 GPU 的对齐方式, RGB为两字节对齐
         glPixelStorei(GL_UNPACK_ROW_LENGTH, this->width);    // 设置像素数据 从 CPU 到 GPU 的行的长度
         std::cout << "#################width: " << this->width << " height: " << this->height << std::endl;
@@ -173,21 +171,22 @@ private:
     }
 
     void update_yuv_planar(GLuint texture_id, GLuint shader_location, const void *data, GLint width, GLint height) {
+        glActiveTexture(GL_TEXTURE0 + shader_location);
         glBindTexture(GL_TEXTURE_2D, texture_id);
         glPixelStorei(GL_UNPACK_ROW_LENGTH, width);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE, data);
-        glActiveTexture(GL_TEXTURE0 + shader_location);
 
-        glBindTexture(GL_TEXTURE_2D, texture_id);   // 将 texture 与 当前活跃的shader纹理单元绑定
         // 设置图片放缩后
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glActiveTexture()
     }
 
 private:
+    CShaderload *shader_program = nullptr;
     GLuint texture_rgb_id = INVALID_TEXTURE;   // rgb纹理单元坐标, 可以指定纹理值为 0 为未初始化
     GLuint texture_y = INVALID_TEXTURE;    // YUV y分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化
     GLuint texture_u = INVALID_TEXTURE;    // YUV u分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化

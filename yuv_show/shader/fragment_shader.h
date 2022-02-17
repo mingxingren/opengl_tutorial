@@ -41,6 +41,7 @@ void main()
         float y = texture2D(texY, TexCoord).r;
         float u = texture2D(texU, TexCoord).r;
         float v = texture2D(texU, TexCoord).g;
+
         yuv_to_rgb(y, u, v, FragColor);
     }
     else if (format == 3 || format == 4) {

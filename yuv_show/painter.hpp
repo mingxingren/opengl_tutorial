@@ -74,8 +74,9 @@ public:
         this->shader_load->SetInt("texY", this->y_location_value);
         this->shader_load->SetInt("texU", this->u_location_value);
         this->shader_load->SetInt("texV", this->v_location_value);
-        this->shader_load->SetVec4("icb", 2, 0, 0, 1);
-        this->video_texture = std::make_unique<CTexture>(this->rgb_location_value,
+        this->shader_load->SetVec4("icb", 3, 0, 0, 1);
+        this->video_texture = std::make_unique<CTexture>(this->shader_load.get(),
+                                                         this->rgb_location_value,
                                                          this->y_location_value,
                                                          this->u_location_value,
                                                          this->v_location_value);
@@ -108,7 +109,7 @@ public:
 
         this->shader_load->Use();
         glBindVertexArray(this->VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)0);
         fn_swap_window(this->window);
     }
 
@@ -124,7 +125,7 @@ public:
 
         this->shader_load->Use();
         glBindVertexArray(this->VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)0);
         fn_swap_window(this->window);
     }
 
@@ -139,7 +140,7 @@ public:
 
         this->shader_load->Use();
         glBindVertexArray(this->VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)0);
         fn_swap_window(this->window);
     }
 
@@ -165,7 +166,7 @@ private:
     };
 
     // 顶点索引坐标
-    unsigned int indices[6] = {
+    GLshort indices[6] = {
             0, 1, 3,
             1, 2, 3
     };
