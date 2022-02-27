@@ -63,7 +63,7 @@ int main() {
     });
 
     CSoftDecodeThd decode_thd;
-    decode_thd.StartThd("C:\\Users\\MMK\\Desktop\\QQ_video.mp4", &oPainter);
+    decode_thd.StartThd("D:\\work\\daas-media-test-decode\\test.h264", &oPainter);
 
     bool first_show = false;
     bool quit = false;

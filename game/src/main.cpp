@@ -1,6 +1,8 @@
 ﻿#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "game.h"
+#include "resource_manager.h"
 
 // GLFW function declerations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -9,6 +11,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 const GLuint SCREEN_WIDTH = 800;
 // The height of the screen
 const GLuint SCREEN_HEIGHT = 600;
+
+Game Breakout(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 int main(int argc, char *argv[]) {
 	glfwInit();
@@ -31,6 +35,28 @@ int main(int argc, char *argv[]) {
 	glEnable(GL_BLEND);		// 混合
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	Breakout.Init();
+	
+	GLfloat deltaTime = 0.0f;
+	GLfloat lastFrame = 0.0f;
+
+	Breakout.State = GameState::GAME_ACTIVE;
+	while (!glfwWindowShouldClose(window)) {
+		GLfloat currentFrame = static_cast<GLfloat>(glfwGetTime());
+		deltaTime = currentFrame - lastFrame;
+		glfwPollEvents();
+
+		Breakout.ProcessInput(deltaTime);
+		Breakout.Update(deltaTime);
+
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		Breakout.Render();
+		glfwSwapBuffers(window);
+	}
+
+	ResourceManager::Clear();
+	glfwTerminate();
 	return 0;
 }
 

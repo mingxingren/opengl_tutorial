@@ -14,12 +14,11 @@ static bool print_x_error() {
         GLenum err = glGetError();
         if (err == GL_NO_ERROR) {
             if (res) {
-                std::cout << "##############print_opengl_error success" << std::endl;
+
             }
             break;
         }
         res = false;
-        std::cout << "##############print_opengl_error: " << err << std::endl;
     }
     return res;
 }

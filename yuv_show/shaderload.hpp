@@ -54,6 +54,11 @@ public:
         glUniform4i(variable_id, x1, x2, x3, x4);
     }
 
+    int GetAttribLocation(const std::string &name) {
+        GLint location = glGetAttribLocation(this->ID, name.c_str());
+        return location;
+    }
+
     inline unsigned int GetID() {
         return this->ID;
     }

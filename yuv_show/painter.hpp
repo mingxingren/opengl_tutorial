@@ -55,16 +55,20 @@ public:
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);   // 将绑定EBO 绑定到VAO
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);    // 填充EBO
 
+            GL_R8
+
             // 将VAO中的顶点坐标数据绑定到 location 0 变量
             // 将当前操作的顶点缓冲绑定到 VAO上, 并指定如何解析该顶点内存对象
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+            GLuint position_location = this->shader_load->GetAttribLocation("position");
+            glVertexAttribPointer(position_location, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
             // 激活 location 0 变量
-            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(position_location);
 
             // 将VAO中的纹理坐标数据绑定到 location 1 变量
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+            GLuint texcoor_location = this->shader_load->GetAttribLocation("texcoor");
+            glVertexAttribPointer(texcoor_location, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
             // 激活 location 1 变量
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(texcoor_location);
 
             glBindVertexArray(0);
         }

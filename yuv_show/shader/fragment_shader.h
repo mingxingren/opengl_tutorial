@@ -4,10 +4,7 @@
 #pragma once
 
 static char * fragment_content = R"(
-#version 330 core
-out vec4 FragColor;
-
-in vec2 TexCoord;
+varying vec2 TexCoord;
 
 //format, filter, effect
 uniform ivec4 icb;
@@ -42,7 +39,7 @@ void main()
         float u = texture2D(texU, TexCoord).r;
         float v = texture2D(texU, TexCoord).g;
 
-        yuv_to_rgb(y, u, v, FragColor);
+        yuv_to_rgb(y, u, v, gl_FragColor);
     }
     else if (format == 3 || format == 4) {
         // I420
@@ -50,9 +47,9 @@ void main()
         float u = texture2D(texU, TexCoord).r;
         float v = texture2D(texV, TexCoord).r;
 
-        yuv_to_rgb(y, u, v, FragColor);
+        yuv_to_rgb(y, u, v, gl_FragColor);
     }else {
-        FragColor = texture2D(rgb_texture, TexCoord);
+        gl_FragColor = texture2D(rgb_texture, TexCoord);
     }
 }
 )";

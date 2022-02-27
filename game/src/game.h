@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-enum GameState {
+enum class GameState {
 	GAME_ACTIVE,
 	GAME_MENU,
 	GAME_WIN

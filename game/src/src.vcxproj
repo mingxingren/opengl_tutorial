@@ -149,23 +149,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="image\image_DXT.c" />
     <ClCompile Include="image\image_helper.c" />
     <ClCompile Include="image\SOIL.c" />
     <ClCompile Include="image\stb_image_aug.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="game.h" />
     <ClInclude Include="image\image_DXT.h" />
     <ClInclude Include="image\image_helper.h" />
     <ClInclude Include="image\SOIL.h" />
     <ClInclude Include="image\stbi_DDS_aug.h" />
     <ClInclude Include="image\stbi_DDS_aug_c.h" />
     <ClInclude Include="image\stb_image_aug.h" />
-    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="resource_manager.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>

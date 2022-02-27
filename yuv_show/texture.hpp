@@ -11,6 +11,20 @@
 #define INVALID_TEXTURE 0
 
 class CTexture {
+private:
+    CShaderload *shader_program = nullptr;
+    GLuint texture_rgb_id = INVALID_TEXTURE;   // rgb纹理单元坐标, 可以指定纹理值为 0 为未初始化
+    GLuint texture_y = INVALID_TEXTURE;    // YUV y分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化
+    GLuint texture_u = INVALID_TEXTURE;    // YUV u分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化
+    GLuint texture_v = INVALID_TEXTURE;    // YUV v分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化
+    GLuint shader_rgb_location;     // shader uniform纹理位置值
+    GLuint shader_y_location;       // uniform y 纹理位置值
+    GLuint shader_u_location;       // uniform u 纹理位置值
+    GLuint shader_v_location;       // uniform v 纹理位置值
+    int width = 0;
+    int height = 0;
+
+
 public:
     CTexture(CShaderload *shader, GLuint rgb_location, GLuint y_location, GLuint u_location, GLuint v_location)
     : shader_program(shader)
@@ -41,6 +55,7 @@ public:
                          NULL);     // 设置纹理, 此时像素数据填充设置为 NULL
             this->width = w;
             this->height = h;
+
         }
 
         this->update_texture(data);
@@ -75,6 +90,7 @@ public:
 
             this->width = w;
             this->height = h;
+
         }
 
         this->update_yuv_planar(this->texture_y, this->shader_y_location, y_data, this->width, this->height);
@@ -183,19 +199,6 @@ private:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
-
-private:
-    CShaderload *shader_program = nullptr;
-    GLuint texture_rgb_id = INVALID_TEXTURE;   // rgb纹理单元坐标, 可以指定纹理值为 0 为未初始化
-    GLuint texture_y = INVALID_TEXTURE;    // YUV y分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化
-    GLuint texture_u = INVALID_TEXTURE;    // YUV u分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化
-    GLuint texture_v = INVALID_TEXTURE;    // YUV v分量 纹理单元坐标, 可以指定纹理值为 0 为未初始化
-    GLuint shader_rgb_location;     // shader uniform纹理位置值
-    GLuint shader_y_location;       // uniform y 纹理位置值
-    GLuint shader_u_location;       // uniform u 纹理位置值
-    GLuint shader_v_location;       // uniform v 纹理位置值
-    int width = 0;
-    int height = 0;
 };
 
 #endif //YUV_SHOW_TEXTURE_H
