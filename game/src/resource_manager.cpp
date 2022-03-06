@@ -15,7 +15,7 @@ Shader ResourceManager::LoadShader(const GLchar* vShaderFile, const GLchar* fSha
 	return Shaders[name];
 }
 
-Shader ResourceManager::GetShader(std::string name) {
+Shader& ResourceManager::GetShader(std::string name) {
 	return Shaders[name];
 }
 
@@ -24,7 +24,7 @@ Texture2D ResourceManager::LoadTexture(const GLchar* file, GLboolean alpha, std:
 	return Textures[name];
 }
 
-Texture2D ResourceManager::GetTexure(std::string name) {
+Texture2D& ResourceManager::GetTexure(std::string name) {
 	return Textures[name];
 }
 
@@ -80,8 +80,10 @@ Texture2D ResourceManager::loadTextureFromFile(const GLchar* file, GLboolean alp
 		texture.Internal_Format = GL_RGBA;
 		texture.Image_Format = GL_RGBA;
 	}
+
 	int width, height;
 	unsigned char* image = SOIL_load_image(file, &width, &height, 0, texture.Image_Format == GL_RGBA ? SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
+	std::cout << image << std::endl;
 	texture.Generate(width, height, image);
 	SOIL_free_image_data(image);
 	return texture;

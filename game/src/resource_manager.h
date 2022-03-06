@@ -15,9 +15,9 @@ public:
 
 	static Shader LoadShader(const GLchar* vShaderFile, const GLchar* fShaderFile,
 		const GLchar* gShaderFile, std::string name);
-	static Shader GetShader(std::string name);
+	static Shader& GetShader(std::string name);
 	static Texture2D LoadTexture(const GLchar* file, GLboolean alpha, std::string name);
-	static Texture2D GetTexure(std::string name);
+	static Texture2D& GetTexure(std::string name);
 	static void Clear();
 
 private:
