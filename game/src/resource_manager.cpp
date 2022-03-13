@@ -24,7 +24,7 @@ Texture2D ResourceManager::LoadTexture(const GLchar* file, GLboolean alpha, std:
 	return Textures[name];
 }
 
-Texture2D& ResourceManager::GetTexure(std::string name) {
+Texture2D& ResourceManager::GetTexture(std::string name) {
 	return Textures[name];
 }
 
