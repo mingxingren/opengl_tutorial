@@ -19,7 +19,6 @@ int main() {
         std::cerr << "SDL_Init Error:" << SDL_GetError() << std::endl;
         return EXIT_FAILURE;
     }
-    SDL_SysWMinfo
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
