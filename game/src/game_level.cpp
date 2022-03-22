@@ -31,7 +31,9 @@ void CGameLevel::Load(const GLchar* file, GLuint levelWidth, GLuint levelHeight)
 
 void CGameLevel::Draw(SpriteRenderer& renderer) {
 	for (CGameObject& tile : this->Bricks) {
-		tile.Draw(renderer);
+		if (!tile.Destroyed) {
+			tile.Draw(renderer);
+		}
 	}
 }
 

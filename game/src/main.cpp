@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
 	while (!glfwWindowShouldClose(window)) {
 		GLfloat currentFrame = static_cast<GLfloat>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 		glfwPollEvents();
 
 		Breakout.ProcessInput(deltaTime);
