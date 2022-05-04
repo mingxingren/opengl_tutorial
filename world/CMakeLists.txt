@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.0)
+# 我的诗歌
+project(my_poetry)
+
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+
+# 添加 opengl 3.3 glad 加文件 
+include_directories(deps/glad)
+
+# 列出所有的.c 文件 .cpp文件
+FILE(GLOB SRC_FILES src/*.c*)
+# 列出所有的.hpp 文件
+FILE(GLOB HPP_FILES src/*.hpp)
+
+add_executable(my_poetry ${SRC_FILES} ${HPP_FILES})
+
