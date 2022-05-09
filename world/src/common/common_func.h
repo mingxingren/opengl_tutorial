@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-void log_cout(const std::string& _msg) {
+static void log_cout(const std::string& _msg) {
     std::cout << _msg << std::endl;
 }
 

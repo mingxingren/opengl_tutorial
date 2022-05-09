@@ -1,6 +1,8 @@
 #include <iostream>
+#include "app.h"
 
 int main(int argc, char** argv) {
-    std::cout << "hellow world" << std::endl;
+    App app;
+    app.run();
     return 0;
 }
