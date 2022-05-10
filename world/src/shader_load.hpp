@@ -77,7 +77,7 @@ public:
         auto check_compile_error_func = [](SHADER_FILE_TYPE _shader_type, GLuint _shader_id){
             GLint success;
             GLchar infoLog[1024];
-            constexpr const char* shader_file_type_str[3] = { "vertex shader", "pixel shader", "gemotry shader" };
+            constexpr const char* shader_file_type_str[] = { "vertex shader", "pixel shader", "gemotry shader", "PROGRAM" };
             if (_shader_type != SHADER_FILE_TYPE::PROGRAM) {
                 glGetShaderiv(_shader_id, GL_COMPILE_STATUS, &success);
                 if (!success) {

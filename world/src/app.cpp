@@ -1,4 +1,5 @@
 #include "app.h"
+#include "../deps/glm/glm.hpp"
 #include "common/macrodef.h"
 #include "shader_load.hpp"
 #include "texture2d.h"
@@ -41,7 +42,7 @@ void App::run() {
         return;
     }
 
-    auto shader_ptr = CShader::load_shader_width_path("shader/cube.fs.glsl", "shader/cube.vs.glsl", nullptr);
+    auto shader_ptr = CShader::load_shader_width_path("shader/cube.vs.glsl", "shader/cube.fs.glsl", nullptr);
     float cube_vertexs[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -99,27 +100,33 @@ void App::run() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // 创建纹理
-    GLuint cube_texture;
-    glGenTextures(1, &cube_texture);
-    glBindTexture(GL_TEXTURE_2D, cube_texture);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    Texture2D texture(0, "res/cube_texture.jpg", shader_ptr);
 
     glEnable(GL_DEPTH_TEST);
-    while (glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window)) {
         processInput(window);
         float current_time = glfwGetTime();
         float delta_time = current_time - m_last_time;
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+         
+        // 创建look at 矩阵 view 矩阵
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        shader_ptr->set_matrix("view", view);
 
-        
+        // 创建 projection
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)this->m_dialog_width / (float)this->m_dialog_height, 0.1f, 100.0f);
+        shader_ptr->set_matrix("projection", projection);
+
+        // 创建 model 
+        glm::mat4 model = glm::mat4(1.0f);
+        shader_ptr->set_matrix("model", model);
+
+        texture.bind();
+
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(cube_vertexs) / 5);
+        glfwSwapBuffers(window);
     }
 }
 

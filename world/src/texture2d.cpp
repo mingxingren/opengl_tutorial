@@ -19,15 +19,13 @@ Texture2D::Texture2D(int index, const filesystem::path& image_file, std::shared_
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     stbi_set_flip_vertically_on_load(true);     // 反转 Y 向量
-    unsigned char* data = stbi_load("src/res/box_tex.jpg", &this->m_width, &this->m_height, &this->m_nrchannels, 0);
+    unsigned char* data = stbi_load("res/cube_texture.jpg", &this->m_width, &this->m_height, &this->m_nrchannels, 0);
     if (data) {
+        std::cout << "load texture success" << std::endl;
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->m_width, this->m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     stbi_image_free(data);
-    string val_name = string("texture2d_") + to_string(this->m_index);
-    this->m_shader->use();
-    this->m_shader->set_int(val_name.c_str(), this->m_index);
 }
 
 Texture2D::~Texture2D() {
@@ -35,6 +33,9 @@ Texture2D::~Texture2D() {
 }
 
 void Texture2D::bind() {
+    string val_name = string("texture2d_") + to_string(this->m_index);
+    this->m_shader->use();
+    this->m_shader->set_int(val_name.c_str(), this->m_index);
     glActiveTexture(GL_TEXTURE0 + this->m_index);
     glBindTexture(GL_TEXTURE_2D, this->m_id);
 }
