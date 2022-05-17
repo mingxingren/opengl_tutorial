@@ -1,10 +1,10 @@
 #include "app.h"
-#include "../deps/glm/glm.hpp"
 #include "common/macrodef.h"
 #include "shader_load.hpp"
 #include "texture2d.h"
 
 std::once_flag App::g_init_flag;
+std::unique_ptr<App> App::g_app = nullptr;
 
 App::App() {
     std::call_once(App::g_init_flag, [](){
@@ -16,6 +16,7 @@ App::App() {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
     });
+    g_app.reset(this);
 }
 
 App::~App() {
@@ -29,6 +30,9 @@ void App::run() {
         LOG("Failed to create GLFW window")
         glfwTerminate();
         return;
+    }
+    else {
+        this->m_window = window;
     }
 
     glfwMakeContextCurrent(window);
@@ -104,16 +108,14 @@ void App::run() {
 
     glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
-        processInput(window);
+        this->_process_input(window);
         float current_time = glfwGetTime();
         float delta_time = current_time - m_last_time;
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
          
-        // 创建look at 矩阵 view 矩阵
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        shader_ptr->set_matrix("view", view);
+        shader_ptr->set_matrix("view", this->m_camera.get_view());
 
         // 创建 projection
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)this->m_dialog_width / (float)this->m_dialog_height, 0.1f, 100.0f);
@@ -142,6 +144,21 @@ void App::scroll_callback(GLFWwindow* _window, double _xoffset, double _yoffset)
 
 }
 
-void App::processInput(GLFWwindow* window) {
-
+void App::_process_input(GLFWwindow* window) {
+    float cameraSpeed = 0.05f;
+    glm::vec3 cameraFont = glm::vec3(0.0, 0.0, -1.0);
+    std::cout << "###################### _process_input" << std::endl;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        this->m_camera.move(cameraSpeed * cameraFont);
+        std::cout << "###################### www" << std::endl;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        this->m_camera.move(-cameraSpeed * cameraFont);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        this->m_camera.right(cameraFont, cameraSpeed);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        this->m_camera.right(cameraFont, -cameraSpeed);
+    }
 }

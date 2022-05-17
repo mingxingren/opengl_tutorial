@@ -14,6 +14,7 @@ FILE(GLOB SRC_FILES src/*.c*)
 # 列出所有的.hpp 文件
 FILE(GLOB HPP_FILES src/*.hpp)
 
+message(${SRC_FILES})
 add_executable(my_poetry ${SRC_FILES} ${HPP_FILES} ${SRC_GLAD_FILES})
 target_include_directories(my_poetry PRIVATE D:\\third_lib\\openGL\\glfw-3.3.5.bin.WIN64\\include)
 target_link_directories(my_poetry PRIVATE D:\\third_lib\\openGL\\glfw-3.3.5.bin.WIN64\\lib-mingw-w64)
