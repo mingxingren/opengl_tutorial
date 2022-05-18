@@ -119,6 +119,10 @@ void App::run() {
         shader_ptr->set_matrix("view", this->m_camera.get_view());
 
         // 创建 projection
+        // @param 视角
+        // @param 宽高比
+        // @param 近处
+        // @param 远处
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)this->m_dialog_width / (float)this->m_dialog_height, 0.1f, 100.0f);
         shader_ptr->set_matrix("projection", projection);
 
@@ -147,7 +151,7 @@ void App::scroll_callback(GLFWwindow* _window, double _xoffset, double _yoffset)
 }
 
 void App::_process_input(GLFWwindow* window) {
-    float cameraSpeed = 0.05f;
+    float cameraSpeed = 0.005f;
     glm::vec3 cameraFont = glm::vec3(0.0, 0.0, -1.0);
     std::cout << "###################### _process_input  GLFW_KEY_W state:" << glfwGetKey(window, GLFW_KEY_W)  << std::endl;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
