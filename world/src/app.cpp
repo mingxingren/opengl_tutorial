@@ -41,6 +41,7 @@ void App::run() {
     glfwSetScrollCallback(window, scroll_callback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return;
@@ -129,6 +130,7 @@ void App::run() {
 
         glDrawArrays(GL_TRIANGLES, 0, sizeof(cube_vertexs) / 5);
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 }
 
@@ -147,7 +149,7 @@ void App::scroll_callback(GLFWwindow* _window, double _xoffset, double _yoffset)
 void App::_process_input(GLFWwindow* window) {
     float cameraSpeed = 0.05f;
     glm::vec3 cameraFont = glm::vec3(0.0, 0.0, -1.0);
-    std::cout << "###################### _process_input" << std::endl;
+    std::cout << "###################### _process_input  GLFW_KEY_W state:" << glfwGetKey(window, GLFW_KEY_W)  << std::endl;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         this->m_camera.move(cameraSpeed * cameraFont);
         std::cout << "###################### www" << std::endl;
