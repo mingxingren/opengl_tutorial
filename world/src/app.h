@@ -34,4 +34,11 @@ private:
     float m_last_time;      // 记录上一次循环的时间刻度
 
     Camera m_camera;        // 摄像机
+
+    // 鼠标相关
+    bool m_first_mouse = true;
+    double m_last_x = 800.0f / 2.0;
+    double m_last_y = 600.0f / 2.0;
+    float m_yaw = -90.0f;
+    float m_pitch = 0.0f;
 };
