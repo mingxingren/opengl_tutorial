@@ -5,6 +5,9 @@ project(my_poetry)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
+# 使用 Cpp assert
+add_definitions(NDEBUG)
+
 # 添加 opengl 3.3 glad 加文件 
 include_directories(deps/glad)
 FILE(GLOB SRC_GLAD_FILES deps/glad/*.c)

@@ -33,8 +33,8 @@ Texture2D::~Texture2D() {
 }
 
 void Texture2D::bind() {
+    // this->m_shader->use();
     string val_name = string("texture2d_") + to_string(this->m_index);
-    this->m_shader->use();
     this->m_shader->set_int(val_name.c_str(), this->m_index);
     glActiveTexture(GL_TEXTURE0 + this->m_index);
     glBindTexture(GL_TEXTURE_2D, this->m_id);

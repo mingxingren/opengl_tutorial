@@ -19,6 +19,7 @@ void Camera::set_front(glm::vec3 front_vec) {
     this->m_front = front_vec;
     // 利用y轴单元向量 和 front 向量 计算 向右的向量 和 相机实际的向上向量
     glm::vec3 up = { 0.0f, 1.0f, 0.0f };
-    glm::vec3 Right = -glm::cross(this->m_front, up);
+    glm::vec3 Right = glm::normalize(glm::cross(this->m_front, up));
     this->m_up = glm::cross(Right, this->m_front);
+    this->m_up = glm::normalize(this->m_up);
 }

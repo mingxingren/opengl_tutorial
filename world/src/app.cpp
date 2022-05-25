@@ -2,6 +2,7 @@
 #include "common/macrodef.h"
 #include "shader_load.hpp"
 #include "texture2d.h"
+#include "cube_sprite.h"
 
 std::once_flag App::g_init_flag;
 std::unique_ptr<App> App::g_app = nullptr;
