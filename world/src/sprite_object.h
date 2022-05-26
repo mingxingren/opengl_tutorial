@@ -1,6 +1,8 @@
 #ifndef SPRITE_OBJECT_H
 #define SPRITE_OBJECT_H
 
+#include "../deps/glm/glm.hpp"
+
 class SpriteObject {
 public:
     SpriteObject() = default;
