@@ -69,7 +69,8 @@ CubeSprite::CubeSprite(const std::vector<std::filesystem::path> & _vtfile) {
 }
 
 CubeSprite::~CubeSprite() {
-
+    glDeleteVertexArrays(1, &this->m_vao);
+    glDeleteBuffers(1, &this->m_vbo);
 }
 
 void CubeSprite::draw(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {

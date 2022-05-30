@@ -3,6 +3,7 @@
 #include "shader_load.hpp"
 #include "texture2d.h"
 #include "cube_sprite.h"
+#include "box_sprite.h"
 
 std::once_flag App::g_init_flag;
 std::unique_ptr<App> App::g_app = nullptr;
@@ -48,65 +49,67 @@ void App::run() {
         return;
     }
 
-    auto shader_ptr = CShader::load_shader_width_path("shader/cube.vs.glsl", "shader/cube.fs.glsl", nullptr);
-    float cube_vertexs[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    // auto shader_ptr = CShader::load_shader_width_path("shader/cube.vs.glsl", "shader/cube.fs.glsl", nullptr);
+    // float cube_vertexs[] = {
+    //     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    //      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+    //      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    //      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    //     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    //     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    //      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    //      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    //     -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    //     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //     -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //     -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    //     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //     -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    //      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //      0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //      0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+    //      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    //      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    //     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
+    //     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    //      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    //      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //     -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    //     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    // };
 
-    unsigned int VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertexs), (void*)cube_vertexs, GL_STATIC_DRAW);
+    // unsigned int VAO, VBO;
+    // glGenVertexArrays(1, &VAO);
+    // glGenBuffers(1, &VBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertexs), (void*)cube_vertexs, GL_STATIC_DRAW);
     
-    glBindVertexArray(VAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    // glBindVertexArray(VAO);
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    // glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    // glEnableVertexAttribArray(1);
 
-    Texture2D texture(0, "res/cube_texture.jpg", shader_ptr);
+    // Texture2D texture(0, "res/cube_texture.jpg", shader_ptr);
+
+    BoxSprite box("res/cube_texture.jpg");
 
     glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
@@ -118,7 +121,7 @@ void App::run() {
         // 每次渲染清除背景颜色缓冲 和 深度缓冲
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
          
-        shader_ptr->set_matrix("view", this->m_camera.get_view());
+        // shader_ptr->set_matrix("view", this->m_camera.get_view());
 
         // 创建 projection
         // @param 视角
@@ -126,15 +129,16 @@ void App::run() {
         // @param 近处
         // @param 远处
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)this->m_dialog_width / (float)this->m_dialog_height, 0.1f, 100.0f);
-        shader_ptr->set_matrix("projection", projection);
+        // shader_ptr->set_matrix("projection", projection);
 
         // 创建 model 
         glm::mat4 model = glm::mat4(1.0f);
-        shader_ptr->set_matrix("model", model);
+        // shader_ptr->set_matrix("model", model);
 
-        texture.bind();
+        // texture.bind();
 
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(cube_vertexs) / 5);
+        // glDrawArrays(GL_TRIANGLES, 0, sizeof(cube_vertexs) / 5);
+        box.draw(model, projection, this->m_camera.get_view());
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
