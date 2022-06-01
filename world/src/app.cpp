@@ -120,7 +120,9 @@ void App::run() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         // 每次渲染清除背景颜色缓冲 和 深度缓冲
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-         
+
+
+        // shader_ptr->use(); 
         // shader_ptr->set_matrix("view", this->m_camera.get_view());
 
         // 创建 projection
@@ -137,8 +139,9 @@ void App::run() {
 
         // texture.bind();
 
-        // glDrawArrays(GL_TRIANGLES, 0, sizeof(cube_vertexs) / 5);
-        box.draw(model, projection, this->m_camera.get_view());
+        // glBindVertexArray(VAO);
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
+        box.draw(model, this->m_camera.get_view(), projection);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -184,7 +187,6 @@ void App::mouse_callback(GLFWwindow* _window, double _xpos, double _ypos) {
     front.z = sin(glm::radians(g_app->m_yaw)) * cos(glm::radians(g_app->m_pitch));
     glm::vec3 front_normal = glm::normalize(front);
 
-    printf("#########################front x: %f y: %f z: %f \n", front.x, front.y, front.z);
     g_app->m_camera.set_front(front_normal);
 }
 

@@ -4,7 +4,7 @@
 #include "shader_load.hpp"
 
 BoxSprite::BoxSprite(const std::filesystem::path & _file) {
-    m_shader = CShader::load_shader_width_path("shader/cube/cube.vs.glsl", "shader/cube/cube.fs.glsl", nullptr);
+    m_shader = CShader::load_shader_width_path("shader/cube/box.vs.glsl", "shader/cube/box.fs.glsl", nullptr);
 
     this->m_texture_index = 0;
     this->m_texture.reset(new Texture2D(this->m_texture_index, _file, m_shader));
@@ -62,8 +62,13 @@ BoxSprite::BoxSprite(const std::filesystem::path & _file) {
 
     // 绑定 location = 0 的输入
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 5, (void*)0);
+    glEnableVertexAttribArray(0);
     // 绑定 location = 1 的输入
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 5, (void*)(sizeof(GL_FLOAT) * 3));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 5, (void*)(sizeof(GL_FLOAT) * 3));
+    glEnableVertexAttribArray(1);
+
+    // 取消当前绑定 VAO
+    glBindVertexArray(0);
 }
 
 BoxSprite::~BoxSprite() {
