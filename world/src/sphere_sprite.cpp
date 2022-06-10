@@ -73,6 +73,8 @@ void SphereSprite::draw(const glm::mat4& model, const glm::mat4& view, const glm
     this->m_shader->set_matrix("view", view);
     this->m_shader->set_matrix("projection", projection);
 
+    glBindVertexArray(this->m_vao);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawElements(GL_TRIANGLES, this->m_x_segments * this->m_y_segments * 6, GL_UNSIGNED_INT, 0);
+    this->m_shader->unuse(); 
 }

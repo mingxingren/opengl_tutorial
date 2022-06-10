@@ -85,4 +85,5 @@ void BoxSprite::draw(const glm::mat4& model, const glm::mat4& view, const glm::m
     this->m_texture->bind();
     glBindVertexArray(this->m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+    this->m_shader->unuse();   
 }

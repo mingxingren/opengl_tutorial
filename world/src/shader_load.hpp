@@ -145,6 +145,10 @@ public:
         glUseProgram(this->m_id);
     }
 
+    void unuse() {
+        glUseProgram(0);
+    }
+
     void set_int(const std::string& _name, int _value) const {
         glUniform1i(glGetUniformLocation(this->m_id, _name.c_str()), _value);
     }

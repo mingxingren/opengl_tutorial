@@ -84,4 +84,5 @@ void CubeSprite::draw(const glm::mat4& model, const glm::mat4& view, const glm::
     this->m_shader->set_matrix("view", view);
     this->m_shader->set_matrix("projection", projection);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+    this->m_shader->unuse(); 
 }
