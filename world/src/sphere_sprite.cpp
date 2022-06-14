@@ -1,6 +1,7 @@
 #include "sphere_sprite.h" 
 
 #include <vector>
+#include "common/common_func.h"
 #include "../deps/glad/glad.h"
 #include "../deps/glm/glm.hpp"
 #include "shader_load.hpp"
@@ -17,21 +18,20 @@ SphereSprite::SphereSprite() : SpriteObject() {
     
     const unsigned int X_SEGMENTS = 64;
     const unsigned int Y_SEGMENTS = 64;
-    const float PI = 3.14159265358979323846f;
     for (unsigned int y = 0; y <= Y_SEGMENTS; y++) {
         for (unsigned int x = 0; x <= X_SEGMENTS; x++) {
             float xSegment = (float)x / (float)X_SEGMENTS;
             float ySegment = (float)y / (float)Y_SEGMENTS;
-            float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
-            float yPos = std::cos(ySegment * PI);
-            float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+            float xPos = std::cos(xSegment * 2.0f * G_PI) * std::sin(ySegment * G_PI);
+            float yPos = std::cos(ySegment * G_PI);
+            float zPos = std::sin(xSegment * 2.0f * G_PI) * std::sin(ySegment * G_PI);
             this->m_vertices.emplace_back(xPos);
             this->m_vertices.emplace_back(yPos);
             this->m_vertices.emplace_back(zPos);
         }
     }
     
-    std::vector<int> sphereIndices;
+    std::vector<unsigned int> sphereIndices;
     for (int i = 0; i < Y_SEGMENTS; i++) {
         for (int j = 0; j < X_SEGMENTS; j++) {
             this->m_indices.push_back(i * (X_SEGMENTS + 1) + j);
