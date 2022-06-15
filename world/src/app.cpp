@@ -6,6 +6,7 @@
 #include "box_sprite.h"
 #include "sphere_sprite.h"
 #include "cylinder_object.h"
+#include "cone_sprite.h"
 
 std::once_flag App::g_init_flag;
 std::unique_ptr<App> App::g_app = nullptr;
@@ -54,6 +55,7 @@ void App::run() {
     BoxSprite box("res/cube_texture.jpg");
     SphereSprite sphere = SphereSprite();
     CylinderObject cylinder = CylinderObject(10, 10);
+    ConeSprite cone = ConeSprite();
 
     glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(window)) {
@@ -84,7 +86,8 @@ void App::run() {
         // model = glm::translate(model,  glm::vec3(1.0f, 1.0f, 2.0f));
         // box.draw(model, this->m_camera.get_view(), projection);
         // sphere.draw(model, this->m_camera.get_view(), projection);
-        cylinder.draw(model, this->m_camera.get_view(), projection);
+        // cylinder.draw(model, this->m_camera.get_view(), projection);
+        cone.draw(model, this->m_camera.get_view(), projection);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
