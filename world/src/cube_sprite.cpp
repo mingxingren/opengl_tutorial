@@ -65,7 +65,9 @@ CubeSprite::CubeSprite(const std::vector<std::filesystem::path> & _vtfile) {
     glGenVertexArrays(1, &this->m_vao);
     glBindVertexArray(this->m_vao);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(0));
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(0 + sizeof(float) * 3));
+    glEnableVertexAttribArray(1);
 }
 
 CubeSprite::~CubeSprite() {

@@ -35,8 +35,6 @@ CylinderObject::CylinderObject(unsigned int _w, unsigned int _h) : SpriteObject(
         } 
     }
 
-    std::cout << "have points number is: " << m_vtPoints.size() << "copy points is: " << m_vtPoints_copy.size() << std::endl;
-
     glGenBuffers(1, &this->m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_vbo);
     glBufferData(GL_ARRAY_BUFFER, m_vtPoints.size() * sizeof(float) * 3, reinterpret_cast<void*>(&m_vtPoints[0]), GL_STATIC_DRAW);

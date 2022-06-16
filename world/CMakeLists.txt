@@ -13,9 +13,9 @@ include_directories(deps/glad)
 FILE(GLOB SRC_GLAD_FILES deps/glad/*.c)
 
 # 列出所有的.c 文件 .cpp文件
-FILE(GLOB SRC_FILES src/*.c*)
+FILE(GLOB_RECURSE SRC_FILES src/*.c*)
 # 列出所有的.hpp 文件
-FILE(GLOB HPP_FILES src/*.hpp)
+FILE(GLOB_RECURSE HPP_FILES src/*.hpp)
 
 
 message(${SRC_FILES})
