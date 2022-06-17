@@ -82,9 +82,9 @@ void App::run() {
 
         // 设置光照
         glm::vec3 light_pos(1.2f, 1.0f, 2.0f);
-        glm::mat4 light_model;
+        glm::mat4 light_model = glm::mat4(1.0f);
         light_model = glm::translate(light_model, light_pos);
-        light_model = glm::scale(light_model, glm::vec3(0.2f));
+        light_model = glm::scale(light_model, glm::vec3(0.5f));
         light.draw(light_model, this->m_camera.get_view(), projection);
 
         // 创建 model
@@ -96,7 +96,7 @@ void App::run() {
         // box.draw(model, this->m_camera.get_view(), projection);
         // sphere.draw(model, this->m_camera.get_view(), projection);
         // cylinder.draw(model, this->m_camera.get_view(), projection);
-        box.draw(model, this->m_camera.get_view(), projection);
+        // box.draw(model, this->m_camera.get_view(), projection);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
