@@ -26,7 +26,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // lighting
-glm::vec3 lightPos(0.5f, 0.5f, 1.0f);
+glm::vec3 lightPos(0.5f, 0.0f, 1.0f);
 
 int main(int, char**) {
     // glfw: initialize and configure
@@ -152,21 +152,6 @@ int main(int, char**) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         lightingShader.use();
-
-        // struct Material {
-        //     vec3 ambient;
-        //     vec3 diffuse;
-        //     vec3 specular;
-        //     float shininess;
-        // };
-
-        // struct Light {
-        //     vec3 position;
-        //     vec3 ambient;
-        //     vec3 diffuse;
-        //     vec3 specular;
-        // };
-
         lightingShader.setVec3("light.position", lightPos);
         lightingShader.setVec3("cameraPos", camera.Position);
 
