@@ -31,7 +31,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // lighting
-glm::vec3 lightPos(0.5f, 0.0f, 1.0f);
+glm::vec3 lightPos(1.0f, 0.0f, 0.0f);
 
 int main(int, char**) {
     // glfw: initialize and configure
@@ -151,8 +151,13 @@ int main(int, char**) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
+    lightingShader.use();
     unsigned int diffuseMap = loadTexture(std::filesystem::path("container.png").string().c_str());
     lightingShader.setInt("material.diffuse", 0);
+
+    unsigned int specularMap = loadTexture(std::filesystem::path("container_specular.png").string().c_str());
+    lightingShader.setInt("material.specular", 1);
+    lightingShader.unuse();
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -169,9 +174,12 @@ int main(int, char**) {
 
         // 根据时间算出阳光变化
         glm::vec3 lightColor;
-        lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0));
-        lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7));
-        lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3));
+        lightColor.x = 1.0f;
+        lightColor.y = 1.0f;
+        lightColor.z = 1.0f;
+        // lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0));
+        // lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7));
+        // lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3));
         glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);  // 漫反射系数
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);    // 环境光
         lightingShader.setVec3("light.ambient", ambientColor);
@@ -180,7 +188,7 @@ int main(int, char**) {
 
         // lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         // lightingShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
-        lightingShader.setVec3("material.specular",  0.5f, 0.5f, 0.5f);
+        // lightingShader.setVec3("material.specular",  0.5f, 0.5f, 0.5f);
         lightingShader.setFloat("material.shininess", 32.0f);
 
         // view/projection transformations
@@ -193,8 +201,13 @@ int main(int, char**) {
         glm::mat4 model = glm::mat4(1.0f);
         lightingShader.setMat4("model", model);
 
+        // 激活纹理通道0
         glActiveTexture(GL_TEXTURE0 + 0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+        // 激活纹理通道1
+        glActiveTexture(GL_TEXTURE0 + 1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
 
         // render the cube
         glBindVertexArray(cubeVAO);

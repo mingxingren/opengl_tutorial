@@ -76,6 +76,11 @@ public:
     { 
         glUseProgram(ID); 
     }
+
+    void unuse() const {
+        glUseProgram(0);
+    }
+
     // utility uniform functions
     // ------------------------------------------------------------------------
     void setBool(const std::string &name, bool value) const
