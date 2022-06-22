@@ -151,7 +151,7 @@ int main(int, char**) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    lightingShader.use();       // 设置 shader 时, 需要先绑定
+    lightingShader.use();
     unsigned int diffuseMap = loadTexture(std::filesystem::path("container.png").string().c_str());
     lightingShader.setInt("material.diffuse", 0);
 
@@ -169,7 +169,8 @@ int main(int, char**) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         lightingShader.use();
-        lightingShader.setVec3("light.position", lightPos);
+        glm::vec3 light_direction = glm::vec3(1.0f, 0.3f, 0.5f);
+        lightingShader.setVec3("light.direction", light_direction);
         lightingShader.setVec3("cameraPos", camera.Position);
 
         // 根据时间算出阳光变化
