@@ -8,10 +8,14 @@ struct Material {
 };
 
 struct Light {
-    vec3 direction;
+    vec3 position;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    float constant; // 光衰减公式中的常量
+    float linear;   // 光衰减公式中的线性值
+    float quadratic;    // 光衰减公式中的二次项
 };
 
 in vec3 FragPos;
@@ -26,7 +30,7 @@ void main() {
     vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;  // 漫反射贴图可以替代为环境光
 
     vec3 norm = normalize(Normal);      // 法线单位向量化
-    vec3 lightDir = normalize(-light.direction);
+    vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm, lightDir), 0.0); // 算出光线与法线的夹角
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb; // 反射光为环境光
 
@@ -36,6 +40,15 @@ void main() {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;    // 高光根据镜面纹理贴图获取
 
+    // 计算光衰减
+    float distance = length(light.position - FragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);
+    
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
     vec3 result  = ambient + diffuse + specular;
+
     FragColor = vec4(result, 1.0);
 }

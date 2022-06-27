@@ -169,8 +169,8 @@ int main(int, char**) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         lightingShader.use();
-        glm::vec3 light_direction = glm::vec3(1.0f, 0.3f, 0.5f);
-        lightingShader.setVec3("light.direction", light_direction);
+        glm::vec3 light_position = glm::vec3(3.0f, 0.3f, 0.5f);
+        lightingShader.setVec3("light.position", light_position);
         lightingShader.setVec3("cameraPos", camera.Position);
 
         // 根据时间算出阳光变化
@@ -186,6 +186,9 @@ int main(int, char**) {
         lightingShader.setVec3("light.ambient", ambientColor);
         lightingShader.setVec3("light.diffuse", diffuseColor);
         lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("light.constant", 1.0f);
+        lightingShader.setFloat("light.linear", 0.09f);
+        lightingShader.setFloat("light.quadratic", 0.032f);
 
         // lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
         // lightingShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
@@ -198,27 +201,38 @@ int main(int, char**) {
         lightingShader.setMat4("projection", projection);
         lightingShader.setMat4("view", view);
 
-        // world transformation
-        glm::mat4 model = glm::mat4(1.0f);
-        lightingShader.setMat4("model", model);
-
+        std::vector<glm::vec3> cubePosition;
+        cubePosition.emplace_back(2.0f, 1.0f, 0.5f);
+        cubePosition.emplace_back(-10.0f, 0.5f, -0.5f);
+        cubePosition.emplace_back(-5.5f, -1.0f, -0.5f);
+        cubePosition.emplace_back(0.0f, 0.5f, -0.5f);
+        
         // 激活纹理通道0
         glActiveTexture(GL_TEXTURE0 + 0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        for (int i = 0; i < cubePosition.size(); i++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePosition[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            lightingShader.setMat4("model", model);
+
+            // render the cube
+            glBindVertexArray(cubeVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        // world transformation
+        glm::mat4 model = glm::mat4(1.0f);
 
         // 激活纹理通道1
         glActiveTexture(GL_TEXTURE0 + 1);
         glBindTexture(GL_TEXTURE_2D, specularMap);
 
-        // render the cube
-        glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
         lightCubeShader.use();
         lightCubeShader.setMat4("projection",  projection);
         lightCubeShader.setMat4("view", view);
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
+        model = glm::translate(model, light_position);
         model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
         lightCubeShader.setMat4("model", model);
 
