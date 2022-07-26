@@ -84,6 +84,7 @@ int main()
 
     // build and compile shaders
     // -------------------------
+    Shader shader("shader_mapping.vs.glsl", "shader_mapping.fs.glsl");
     Shader simpleDepthShader("shadow_mapping_depth.vs.glsl", "shadow_mapping_depth.fs.glsl");
     Shader debugDepthQuad("debug_quad.vs.glsl", "debug_quad.fs.glsl");
 
@@ -141,6 +142,9 @@ int main()
 
     // shader configuration
     // --------------------
+    shader.use();
+    shader.setInt("diffuseTexture", 0);
+    shader.setInt("shadowMap", 1);
     debugDepthQuad.use();
     debugDepthQuad.setInt("depthMap", 0);
 
@@ -193,6 +197,21 @@ int main()
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        shader.use();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
+        
+        shader.setVec3("viewPos", camera.Position);
+        shader.setVec3("lightPos", lightPos);
+        shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, woodTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        renderScene(shader);
+
         // render Depth map to quad for visual debugging
         // ---------------------------------------------
         debugDepthQuad.use();
@@ -200,7 +219,7 @@ int main()
         debugDepthQuad.setFloat("far_plane", far_plane);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, depthMap);
-        renderQuad();
+        // renderQuad();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
